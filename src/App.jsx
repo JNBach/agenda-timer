@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 if (!document.getElementById("mat-fonts")) {
   const l = document.createElement("link");
@@ -477,12 +478,19 @@ export default function App() {
 
   const shared = { dark, onToggleTheme: toggleTheme };
 
-  if (phase === "setup")
-    return <SetupScreen items={items} setItems={setItems} title={title} setTitle={setTitle} onStart={doStart} {...shared} />;
-  if (phase === "done")
-    return <DoneScreen items={items} title={title} onReset={doReset} {...shared} />;
   return (
-    <RunningScreen items={items} title={title} currentIndex={currentIndex} elapsed={elapsed}
-      running={running} onTogglePause={doTogglePause} onSkip={doSkip} onReset={doReset} {...shared} />
+    <>
+      {phase === "setup" && (
+        <SetupScreen items={items} setItems={setItems} title={title} setTitle={setTitle} onStart={doStart} {...shared} />
+      )}
+      {phase === "done" && (
+        <DoneScreen items={items} title={title} onReset={doReset} {...shared} />
+      )}
+      {phase === "running" && (
+        <RunningScreen items={items} title={title} currentIndex={currentIndex} elapsed={elapsed}
+          running={running} onTogglePause={doTogglePause} onSkip={doSkip} onReset={doReset} {...shared} />
+      )}
+      <Analytics />
+    </>
   );
 }
